@@ -1,30 +1,16 @@
 # Inventory-Control-Manager
 In Partial Completion of CPE106L
 
-Every businessman needs an Inventory Control Management to manage their stocks, pricing and exponential sales on their product. An Inventory Control is a process of managing stocks and products in order to satisfy the customer’s demands without any unnecessary delay. The goal of the program is to heavily focus in managing inventory for stocks and products and to ease the progress in obtaining sales from the business by showing statistics per daily income. 
+Initial Proposal: https://mymailmapuaedu-my.sharepoint.com/:b:/g/personal/kktmorales_mymail_mapua_edu_ph/ETf1Wm3zWZ9CqZa__rU6CDAB1GU7AmPbtYFWZkZCjdSh4A?e=WfAAWn
 
-Below is the list of specifications of the program: 
+Deliverables/Sprints: https://mymailmapuaedu-my.sharepoint.com/:f:/g/personal/kktmorales_mymail_mapua_edu_ph/ElucEOgIzEFFtBQW0HyFGC4Bs132i9J_8SVzX6XjjNn1cw?e=dIZziW
 
-A customer selects an item from the product list and adds it into the cart. Once selected into the cart, it will now ask to finalize the selected items into the cart in order to total the price of the items combined. 
-
-The product list serves as a list for the product listed and its quantities. It can add or remove items as well as to update its quantities for availability. It has the product’s data to view the product in full details. 
-
-A product will contain the following attributes: Product Name, Product code, Price. This object will return the information it had as well as to update the product’s content if wished to be changed such as changing the information of the product. The product name is available to be on use in Product list. 
-
-A cashier will update the quantity of the product specified by the product code and the sales if a product was reduced. It will compute the following payment of the customer’s finalized items and the customer’s actual payment. Once done, it will return the payment change to the customer and add the payment of the customer’s finalized items into the sales. 
-
-The sales will be updated if the customer payment of the finalized items was done in the cashier as it would receive the payment and adds it into a new income, which the total sale per day will reset and returns the value of the daily sales. 
-
-The nouns attributed and used into the program are: 
-Product Name                                       Product Code                                      Price 
-Item List                                         Product Quantity                               Customer Cart 
-Client Payment                                     Total Payment                                 Updated Sales 
-Daily Sales 
-
+Class Diagram: https://mymailmapuaedu-my.sharepoint.com/:i:/g/personal/kktmorales_mymail_mapua_edu_ph/Edj31m3BQ65Ir4AI00PqAX8BCevhfidNXuXpr8L7YabfMw?e=lmxaaB
  
+Sprint 1:
+The initial Goal of Sprint 1 is to estbalish the structure of program. We did create an initial class diagram, but we knew that there as much more to the structure
+as such our first official meeting was about building the new class diagram. We unfortunately loss the audio for the meeting but the actual class diagram itself will be seen in the link above.
 
-The verbs attributed and used into the program are: 
+Due to the amount of college requirements we had to do during the last week, we had to limit on what we can do. I started to project by initializing the object person. In the following days, I will be starting to work on other objects that fall under data structure together with Seth Dayao, whilst my other member, Jemuel will be working on the UI implementation of the program. On the following days, we will be focusing on the the objects and have a goal being able to test all objects on a unittest while my other member focus on the ui aspect of the program. 
 
-Get product                                       Update Item List                       Updated Item Quantity 
-Add Item to Cart                                 Finalize Cart Items                       Get Client Payment 
-Return Change                                     Updated Sales                            Peek Daily Sales  
+The person object may now be able to accept different values and can now be integrated with a unittest
