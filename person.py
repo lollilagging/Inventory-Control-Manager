@@ -1,73 +1,137 @@
 import sqlite3
-import datetime
+#import Cashier/Cashier
 
 class customer(object):
-    
-    def __init__(self, shop, username = 'guest', password = 'guest'):
+
+    monthList = ("January", "Febuary", "March", "April", "May", "June", "July", "August", "Septmber", "October", "November", "December")
+    rPRate = 1
+
+    def __init__(self, UID = "guest", password = 'guest'):
         """ Initialization of Data """
-        self.monthList = ("January", "Febuary", "March", "April", "May", "June", "July", "August", "Septmber", "October", "November", "December")
-        self.login(username, password)
-        self.cashier = shop
-        self.cart = []
-
-    def login(self, username, password):
-        """ Sets Up Personal Infrmation for Certain Usernames """
-        conn = sqlite3.connect('database/customers.db')
-
-        c = conn.cursor()
+        self.login(UID, password)
+        self.cart = [{}]
+        self.password = None
+        #ADD LATER THE rPRate Initialization
     
-        c.execute("Select * FROM customers WHERE username LIKE {} AND password LIKE {}".format(username, password))
-
-        if c.rowcount() == 0:
+    def login(self, userID, password):
+        """ Sets Up Personal Infrmation for Certain Usernames """
+        
+        if userID  == "guest" and password == "guest": 
             self.guest()
-            return "ERROR CREDS"
+            return True
+
+        conn = sqlite3.connect('database/customers.db')
+        c = conn.cursor()
+        c.execute("Select * FROM customers WHERE username LIKE {} AND password LIKE {}".format(userID, password))
+
+        if c.rowcount() <= 0 or c.rowcount() > 1:
+            self.guest()
+            return False
         
         user = c.fetchall()
+
         self.name = user[0]
         self.UID = user[1]
         self.expData = {"month":user[2], "day":user[3], "year":user[4]}
-        return "Successful"  
+        self.rp = user[5]
+        return True  
+
+    def register(self, Name, Password):
+        """registers the user to the database of the shop, also checks for same name"""
+        pass
 
     def guest(self):
-        """ Sets All Default Information As Default Guest """
+        """Logs Out, Guest Account Init"""
+        self.name = "Customer"
+        self.UID = "none"
+        self.expData = {"month":None, "day":None, "year":None}
+        self.rp = 0
 
-        self.name = "Guest"
-        self.UID = 0
-        self.expData = {"month":None,"day":None, "year":None}
+    def addCart(self, prodID, amt, price): 
+        """ Adds the prodId and the amount for the cart """
+        found = False
+        for item in self.cart : 
+            if prodID == item['ID']:
+                item['amt'] = item['amt'] + amt
+                found = True
 
-    def checkExp(self):
-        """ Check if reward card should be renewed
-            Might be Removed Later
-        """
-        pass
+        if not found:
+            self.cart.append({'ID':prodID, 'amt':amt, 'price':price})
 
-    def addToCart(self, itemID):
-        """ Adds the Cart The Item ID to be handled by other programs """
-        self.cart.append(itemID)
+    def removeCart(self, prodID, amt = 1):
+        """ Remove An Item in The Cart """
+        found = False
+        for item in range(0, len(self.cart)):
+            if prodID == self.cart[item]['ID'] :
+                self.cart.pop(item)
+                found = True
+        return found
 
-    def getTotal(self):
-        """ Requires The Class Shop to Compute Total """
-        pass
-        """ expected return is integer
-        return cashier.getTotal()
-        """
-    
-    def getCart(self):
-        """ Requires Shop Class"""
-        pass
-        #return cashier.getItemList()
-
-    def clearCart(self):
+    def lessenProd(self, prodID, amt):
+        """ Lessen the Item in the Cart (Subtract)"""
+        found = False
+        for item in self.cart : 
+            if prodID == item['ID']:
+                item['amt'] = item['amt'] - amt
+                found = True
+        return found
+                
+    def clearCrt(self):
         self.cart.clear()
-    
-    def pay(self,total,payment):
-        pass
-        """ return Bool 
-        0: Failed Transaction
-        1: Successful Transaction 
-        # return cashier.payTotal(getTotal(), payment) 
-        """
+        return
 
-    def shop(self):
-        "Main Program To Run"
+    def getCart(self, itemDictionary):
+        """ returns list of dictionaries for cart
+        Requires The List of Items in the shops dictionary to be viewed
+        shopdictionary = {prodID : {name, price}}
+        """
+        return self.cart
+    
+    def getTotal(self):
+        totalPrice = 0
+        for items in self.cart : 
+            totalPrice = totalPrice + items['price']
+        return totalPrice
+
+    def setName(self, newName):
+        self.name = newName
+
+    def setPassword(self, newPass):
+        self.password = newPass
+    
+    def verifyPassword(self, input):
+        return self.password == input
+
+    def setExpDate(self):
         pass
+        """ Expected to create 
+        a new valid expiration date for 
+        registrations and renewal"""
+
+    def changePtRate(self, newRate):
+        self.rPRate  = newRate
+
+    def resetRp(self):
+        """ For Possible Reward System """
+        self.rp = 0
+    
+    def addRemoveRp(self, amt):
+        if amt >= 0 or self.rp > amt:
+            self.rp = self.rp + amt
+        else:
+            return False
+        return True
+
+    def getRp(self):
+        return self.rp
+    
+    def getUID(self) : 
+        return self.UID
+    
+    def getName(self) : 
+        return self.name
+
+    def getExpDate(self) : 
+        return self.expData
+
+        
