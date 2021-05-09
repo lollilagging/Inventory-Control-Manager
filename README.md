@@ -14,3 +14,18 @@ as such our first official meeting was about building the new class diagram. We 
 Due to the amount of college requirements we had to do during the last week, we had to limit on what we can do. I started to project by initializing the object person. In the following days, I will be starting to work on other objects that fall under data structure together with Seth Dayao, whilst my other member, Jemuel will be working on the UI implementation of the program. On the following days, we will be focusing on the the objects and have a goal being able to test all objects on a unittest while my other member focus on the ui aspect of the program. 
 
 The person object may now be able to accept different values and can now be integrated with a unittest
+
+Sprint 2 (To be edited): 
+After a week of production, Kenshin was able to finish the whole Customer object while other objects have progressed as well. Some objects were not finished due to lack of time and some due to lack of proper communication because of the different schedules and workloads of the group members.  Seth was able to make the Product object and it was almost complete but it has been decided to be merged with the InventoryManager object due to new ideas and knowledge after the second official meeting. Jemuel has found a proper UI tool called IronPython to be used in implementing a GUI for the project and has started practicing it while visualizing the proper UI for the program. 
+
+There is also newly created UI samples as well as updated class diagram to follow that of sqlite. 
+For the remaining days of the week, certain objects in the program will be modified by both Kenshin and Seth while Jemuel creates a sample UI for the program while it is still in progress. 
+
+Goals for Sprint 3: 
+
+Modified objects 
+
+UnitTest all objects 
+
+Start implementing a UI for the program  
+ 
