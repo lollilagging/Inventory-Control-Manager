@@ -85,7 +85,7 @@ class inventoryManager(object):
         items = c.fetchall()
 
         for item in items:
-            print(item[2])
+            print(item[4])
 
         conn.commit()
         conn.close()
