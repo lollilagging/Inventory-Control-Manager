@@ -1,91 +1,98 @@
 import sqlite3
 
-conn = sqlite3.connect ('northwind.db')
-c = conn.cursor()
-
 # Logic
-
-
 class inventoryManager(object):
 
-    def add_product(self, prod_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order,_reorder_level, discontinued):
-        conn = sqlite3.connect('northwind.db')
+    def __init__(self, dataName = "northwind"):
+        """ A Class For Fetching Information From Object"""
+        self.database = dataName
+
+    def addNewItem(self, prod_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order,_reorder_level, discontinued):
+        """ Adding Specific Item To Database"""
+        conn = sqlite3.connect('database/{}.db'.format(self.database))
         c = conn.cursor()
         c.execute("INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?)",
                   (prod_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order,_reorder_level, discontinued))
         conn.commit()
         conn.close()
 
-    def remove_prod(self, productID):
-        conn = sqlite3.connect('northwind.db')
+    def removeItem(self, productID):
+        """ Removing Specific Item From Database """
+        conn = sqlite3.connect('database/{}.db'.format(self.database))
         c = conn.cursor()
-        c.execute("DELETE from products WHERE product_id = (?)", (productID,))
+        c.execute("DELETE from products WHERE product_id = ?", (productID))
 
         conn.commit()
         conn.close()
 
-    def set_prod_ID(self, idNo, prodName):
-        conn = sqlite3.connect('northwind.db')
-        c = conn.cursor()
-        c.execute("""UPDATE products  SET product_id = (?)
-                    WHERE product_name = (?)
+    def changeData(self, columnType, idNo, data):
+        """ NOT FOR ADDING OR SUBTRACTING QTY; columnType:columnNo; idNo: row; data: updated Val"""
 
-       """, (idNo, prodName))
+        column = ("product_id","product_name","supplier_id","category_id","quantity_per_unit","unit_price","units_in_stock","units_on_order","reorder_level","discontinued")
+        if not columnType == 0 : 
+            conn = sqlite3.connect('database/{}.db'.format(self.database))
+            c = conn.cursor()
+            c.execute("""UPDATE products SET {} = '{}'
+                        WHERE product_id = '{}'
+        """.format(column[columnType], data, idNo))
+            conn.commit()
+            conn.close()
+
+    def changeId(self, newData, oldData) :
+        """ Exclusive For Changing Item ID """
+
+        conn = sqlite3.connect('database/{}.db'.format(self.database))
+        c = conn.cursor()
+        c.execute("""UPDATE products SET product_id = '{}'
+                    WHERE product_id = '{}'
+        """.format(newData, oldData))
         conn.commit()
         conn.close()
 
-    def set_prod_name(self, prodName, idNo):
-        conn = sqlite3.connect('northwind.db')
+    def getProdInfo(self, idNo, columnType):
+        """ NOT FOR ADDING OR SUBTRACTING QTY; columnType:columnNo; idNo: row; data: updated Val"""
+
+        column = ("product_id","product_name","supplier_id","category_id",
+        "quantity_per_unit","unit_price","units_in_stock","units_on_order",
+        "reorder_level","discontinued")
+
+        conn = sqlite3.connect('database/{}.db'.format(self.database))
         c = conn.cursor()
-        c.execute("""UPDATE products  SET product_name = (?)
-                    WHERE product_id = (?)
 
-       """, (prodName, idNo))
-        conn.commit()
+        c.execute("""SELECT {} FROM products WHERE product_id = '{}'""".format(column[columnType],idNo))
+        
+        info = c.fetchone()[0][0]
         conn.close()
+        return info
+    
+    def getProdRow(self, idNo):
+        """ Get Prod Row """
+        conn = sqlite3.connect('database/{}.db'.format(self.database))
 
-    def set_prod_qty(self, prodQty, idNo):
-        conn = sqlite3.connect('northwind.db')
         c = conn.cursor()
-        c.execute("""UPDATE products  SET quantity_per_unit = (?)
-                    WHERE product_id = (?)
-
-       """, (prodQty, idNo))
-        conn.commit()
+        c.execute("""SELECT * FROM products WHERE product_id = '{}'""".format(idNo))
+        
+        info = c.fetchone()
         conn.close()
+        return info
 
-    def get_product_ID(self, prodName):
-        conn = sqlite3.connect('northwind.db')
+    def addSubQty(self, addSub, idNo):
+        """ ADD OR SUBTRACT BY VALUE addSub """
+        initialQty = self.getProdInfo(idNo, 6) #6 = units_in_stocks
+        newQty = initialQty + addSub
+        if newQty >= 0:
+            self.changeData(6,idNo,newQty)
+        else:
+            return False
+        return True
+
+    def getAllProdId() :
+        conn = sqlite3.connect('database/{}.db'.format(self.database))
+
         c = conn.cursor()
-        c.execute("SELECT * from products WHERE product_name = (?)", (prodName,))
-        items = c.fetchall()
-
-        for item in items:
-            print(item[0])
-
-        conn.commit()
+        c.execute("""SELECT product_id FROM products""")
+        
+        info = c.fetchone()
         conn.close()
-
-    def get_product_name(self, prodID):
-        conn = sqlite3.connect('northwind.db')
-        c = conn.cursor()
-        c.execute("SELECT * from products WHERE product_id = (?)", (prodID,))
-        items = c.fetchall()
-
-        for item in items:
-            print(item[1])
-
-        conn.commit()
-        conn.close()
-
-    def get_product_qty(self, prodID):
-        conn = sqlite3.connect('northwind.db')
-        c = conn.cursor()
-        c.execute("SELECT * from products WHERE product_id = (?)", (prodID,))
-        items = c.fetchall()
-
-        for item in items:
-            print(item[4])
-
-        conn.commit()
-        conn.close()
+        
+        return info

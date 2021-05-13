@@ -3,8 +3,6 @@ import sqlite3
 
 class customer(object): #LOGIC
 
-    monthList = ("January", "Febuary", "March", "April", "May", "June", "July", "August", "Septmber", "October", "November", "December")
-
     def __init__(self, dataName = "northwind", uid = "guest", CN = 'guestComp', currentUser = 'guest'):
         """ Initialization of Data """
         self.database = dataName
@@ -20,11 +18,14 @@ class customer(object): #LOGIC
 
         conn = sqlite3.connect('database/' + self.database + '.db')
         c = conn.cursor()
-        c.execute("Select * FROM customers WHERE customer_id LIKE {} AND company_name LIKE {} AND contact_name LIKE {}".format(userID, CN, currentUser))
+        c.execute("Select * FROM customers WHERE customer_id LIKE '{}' AND company_name LIKE '{}' AND contact_name LIKE '{}'".format(userID, CN, currentUser))
 
         if not c.rowcount() == 1: #ONLY ONE USER
             self.guest()
             self.guestUser = True
+            conn.commit()
+            conn.close()
+
             return False
         
         user = c.fetchall()[0]
@@ -42,42 +43,51 @@ class customer(object): #LOGIC
         self.fax = user[10]
 
         self.guestUser = False
+
+        conn.commit()
+        conn.close()
         return True  
 
     def register(self, uid, company, newName, newTitle, newAddress, 
                 newCity, newRegion, newPostal, newCountry, newPhone, 
                 newFax, dataName = 'northwind'):
         """registers the user to the database of the shop, also checks for same name"""
+        check = False
         conn = sqlite3.connect('database/' + self.database + '.db')
 
         c = conn.cursor()
 
-        if checkUser(uid, company, newName):
-            c.execute("INSERT INTO customers VALUES (?,?,?,?,?,?,?,?,?,?,?)", (uid, company, newName, newTitle, newAddress, 
+        if self.checkUser(uid, company, newName):
+            c.execute("""INSERT INTO customers VALUES ('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}')""".format(uid, company, newName, newTitle, newAddress, 
                     newCity, newRegion, newPostal, newCountry, newPhone, newFax))
-            return True
+            check = True
         else:
-            return False
+            check = False
+        conn.commit()
+        conn.close()
+        return check
 
     def unRegister(self) : 
-        if not guestUser:
+        if not self.guestUser:
             conn = sqlite3.connect('database/' + self.database + '.db')
             c = conn.cursor()
-            c.execute("DELETE from customers WHERE customer_id = ?", (self.UID))
+            c.execute("DELETE from customers WHERE customer_id = '{}'".format(self.UID))
+            conn.commit()
+            conn.close()            
         return
 
     def checkUser(self):
         """ Check if the User is Logged In"""
-        return not guestUser
+        return not self.guestUser
         
     def checkAvail(self, uid, company, newName):
         """ Check if user is available """
         conn = sqlite3.connect('database/' + self.database + '.db')
         c = conn.cursor()
-        c.execute("SELECT EXISTS(SELECT 1 FROM customers WHERE customer_id=?)", (uid))
+        c.execute("SELECT EXISTS(SELECT 1 FROM customers WHERE customer_id = '{}')".format(uid))
         if c.fetchone():
             return False
-        c.execute("SELECT EXISTS(SELECT 1 FROM customers WHERE contact_name=? AND company_name = ?)", (newName, company))
+        c.execute("SELECT EXISTS(SELECT 1 FROM customers WHERE contact_name = '{}' AND company_name = '{}')".format(newName, company))
         if c.fetchone():
             return True
         else:
@@ -102,9 +112,10 @@ class customer(object): #LOGIC
     
     def logout(self): 
         self.guest()
+        self.guestUser = True
 
     def addCart(self, prodID, amt, price): 
-        """ Adds the prodId and the amount for the cart """
+        """ Adds the prodId and the amount for the cart ,,, CART DESIGN: [{ID, amt, price}]"""
         found = False
 
         if len(self.cart) != 0:
@@ -172,18 +183,10 @@ class customer(object): #LOGIC
         c.customer
         self.UID  = newUID
 
-        c.execute("UPDATE customers SET customer_id = ?", (self.UID))
-
-    def setID(self, args):
-        """ Sets UID """
-        conn = sqlite3.connect('database/' + self.database + '.db')
-        c = conn.cursor()
-        c.execute("SELECT EXISTS(SELECT 1 FROM customers WHERE customer_id=?)", (uid))
-        if c.fetchone():
-            return False
-        else:
-            c.execute("UPDATE customers SET customer_id = ? WHERE customer_id = ?", (args, self.UID))
-        self.UID  = args
+        c.execute("UPDATE customers SET customer_id = '{}'".format(self.UID))
+        
+        conn.commit()
+        conn.close()
 
     def setCompany(self, newComp):
         self.companyName = newComp
@@ -215,46 +218,46 @@ class customer(object): #LOGIC
     def setFax(self, newFax):
         self.fax = newFax
 
-    def updateRecords(self, newAdd):
+    def updateRecords(self):
         """ Commit to SQLite Database """
         conn = sqlite3.connect('database/' + self.database + '.db')
         c = conn.cursor()
-        c.execute("""UPDATE customers SET company_name = ?, contact_name = ?, contact_title  = ?, 
-                    address = ?, city = ?, region = ?, postal_code = ?, country = ?, phone = ?, 
-                    fax = ?, WHERE customer_id = ?""", (self.companyName, self.name, 
+        c.execute("""UPDATE customers SET company_name = '{}', contact_name = '{}', contact_title  = '{}', 
+                    address = '{}', city = '{}', region = '{}', postal_code = '{}', country = '{}', phone = '{}', 
+                    fax = '{}', WHERE customer_id = '{}'""".format(self.companyName, self.name, 
                     self.title, self.address, self.city, self.region, self.postalCode, 
                     self.country, self.phone, self.fax, self.UID))
         conn.commit()
         conn.close()
 
-    def getCompany(self, newComp):
+    def getCompany(self):
         return self.companyName
         
-    def getName(self, newName):
+    def getName(self):
         return self.name
 
-    def getTitle(self, newTitle):
+    def getTitle(self):
         return self.title
 
-    def getAddress(self, newAdd):
+    def getAddress(self):
         return self.address
     
-    def getCity(self, newCity):
+    def getCity(self):
         return self.city
 
-    def getRegion(self, newRegion):
+    def getRegion(self):
         return self.region
 
-    def getPostCode(self, newPC):
+    def getPostCode(self):
         return self.postalCode
 
-    def getCountry(self, newCountry):
+    def getCountry(self):
         return self.country
     
-    def getPhone(self, newPhone):
+    def getPhone(self):
         return self.phone
 
-    def getFax(self, newFax):
+    def getFax(self):
         return self.fax
 
     def getUID(self): 

@@ -14,8 +14,6 @@ class testPerson(unittest.TestCase):
         testUser = customer()
         self.assertEqual(testUser.getName(),"Customer")
         self.assertEqual(testUser.getUID(), "none")
-        self.assertEqual(testUser.getExpDate(), {"month":None, "day":None, "year":None})
-        self.assertEqual(testUser.getRp(), 0)
         self.assertTrue(testUser.verifyPassword(None))
 
         """ Test for Setters """
@@ -23,20 +21,16 @@ class testPerson(unittest.TestCase):
         testUser.setPassword("Testing")
         testUser.setUID("random UID")
         testUser.addRemoveRp(10)
-        #testUser.setExpDate() -> remove comment when expiration is implemented
         
 
         self.assertEqual(testUser.getName(),"JOHN")
         self.assertTrue(testUser.verifyPassword("Testing"))
         self.assertEqual(testUser.getUID(), "random UID")
         self.assertEqual(testUser.getRp(), 10)
-        #self.assertNotEqual(testUser.getExpDate(), {"month":None, "day":None, "year":None})
-            #-> Remove Comment if expiration is already working
         """ Test for logout """      
         testUser.logout()
         self.assertEqual(testUser.getName(),"Customer")
         self.assertEqual(testUser.getUID(), "none")
-        self.assertEqual(testUser.getExpDate(), {"month":None, "day":None, "year":None})
         self.assertEqual(testUser.getRp(), 0)
         self.assertTrue(testUser.verifyPassword(None))
 
