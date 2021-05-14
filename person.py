@@ -1,4 +1,5 @@
 import sqlite3
+from unittest.runner import TextTestRunner
 #import Cashier/Cashier
 
 class customer(object): #LOGIC
@@ -9,7 +10,7 @@ class customer(object): #LOGIC
         self.login(uid, CN, currentUser)
         self.cart = []
     
-    def login(self, userID, CN, currentUser): 
+    def login(self, userID = "guest", CN="guestComp", currentUser="guest"): 
         """ Sets Up Personal Infrmation for Certain Usernames """
         if userID  == "guest" and CN == "guestComp" and currentUser == "guest": 
             self.guest()
@@ -19,16 +20,12 @@ class customer(object): #LOGIC
         conn = sqlite3.connect('database/' + self.database + '.db')
         c = conn.cursor()
         c.execute("Select * FROM customers WHERE customer_id LIKE '{}' AND company_name LIKE '{}' AND contact_name LIKE '{}'".format(userID, CN, currentUser))
-
-        if not c.rowcount() == 1: #ONLY ONE USER
+        
+        user = c.fetchone()
+        if user == None:
             self.guest()
             self.guestUser = True
-            conn.commit()
-            conn.close()
-
             return False
-        
-        user = c.fetchall()[0]
 
         self.UID = user[0]
         self.companyName = user[1]
@@ -50,14 +47,14 @@ class customer(object): #LOGIC
 
     def register(self, uid, company, newName, newTitle, newAddress, 
                 newCity, newRegion, newPostal, newCountry, newPhone, 
-                newFax, dataName = 'northwind'):
+                newFax):
         """registers the user to the database of the shop, also checks for same name"""
         check = False
         conn = sqlite3.connect('database/' + self.database + '.db')
 
         c = conn.cursor()
 
-        if self.checkUser(uid, company, newName):
+        if self.checkUnique(uid):
             c.execute("""INSERT INTO customers VALUES ('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}')""".format(uid, company, newName, newTitle, newAddress, 
                     newCity, newRegion, newPostal, newCountry, newPhone, newFax))
             check = True
@@ -67,13 +64,29 @@ class customer(object): #LOGIC
         conn.close()
         return check
 
+    def checkUnique(self, id):
+        check = True
+        conn = sqlite3.connect('database/' + self.database + '.db')
+
+        c = conn.cursor()
+
+        c.execute("""SELECT customer_id FROM customers WHERE customer_id = '{}'""".format(id))
+
+        checkID = c.fetchone()
+        if not checkID == None:
+            check = False
+
+        return check
+
     def unRegister(self) : 
         if not self.guestUser:
             conn = sqlite3.connect('database/' + self.database + '.db')
             c = conn.cursor()
             c.execute("DELETE from customers WHERE customer_id = '{}'".format(self.UID))
             conn.commit()
-            conn.close()            
+            conn.close()
+            self.guest()
+            self.guestUser = True          
         return
 
     def checkUser(self):
@@ -176,17 +189,16 @@ class customer(object): #LOGIC
             totalPrice = totalPrice + items['price']
         return totalPrice
 
-    def setUID(self, newUID):
-        """ Sets UID """
+    """def setUID(self, newUID):
+        
         conn = sqlite3.connect('database/' + self.database + '.db')
         c = conn.cursor()
-        c.customer
-        self.UID  = newUID
-
-        c.execute("UPDATE customers SET customer_id = '{}'".format(self.UID))
-        
-        conn.commit()
-        conn.close()
+        if self.checkUnique():
+            self.UID = newUID
+            c.execute("UPDATE customers SET customer_id = '{}'".format(self.UID))
+            
+            conn.commit()
+            conn.close()""" #CANNOT BE DUE TO UNIQUE ATTRIBUTE
 
     def setCompany(self, newComp):
         self.companyName = newComp
@@ -222,9 +234,10 @@ class customer(object): #LOGIC
         """ Commit to SQLite Database """
         conn = sqlite3.connect('database/' + self.database + '.db')
         c = conn.cursor()
-        c.execute("""UPDATE customers SET company_name = '{}', contact_name = '{}', contact_title  = '{}', 
+        c.execute("""UPDATE customers SET company_name = '{}', 
+                    contact_name = '{}', contact_title  = '{}', 
                     address = '{}', city = '{}', region = '{}', postal_code = '{}', country = '{}', phone = '{}', 
-                    fax = '{}', WHERE customer_id = '{}'""".format(self.companyName, self.name, 
+                    fax = '{}' WHERE customer_id = '{}'""".format(self.companyName, self.name, 
                     self.title, self.address, self.city, self.region, self.postalCode, 
                     self.country, self.phone, self.fax, self.UID))
         conn.commit()
