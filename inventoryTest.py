@@ -12,19 +12,15 @@ class TestInventoryManager(unittest.TestCase):
        self.assertEqual(getItem, sampleItem)
 
     def test_removeItem(self):
-     #   removeItemObj = inventoryManager()
-    
-     #   self.assertTrue(removeItemObj.removeItem(1000), 'The function is working properly')
+        pass
     
         
 
     def test_changeData(self):
-        #changeDataObj = inventoryManager()
-        #self.assertTrue(changeDataObj.changeData(0, 1000, 'Box'), 'The function is working properly')
+        pass
 
     def test_changeID(self):
-       # changeIDObj = inventoryManager()
-       # self.assertTrue(changeIDObj.changeId(444, 1000), 'The function is working properly')
+       pass
 
     
 
