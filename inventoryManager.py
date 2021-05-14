@@ -7,12 +7,12 @@ class inventoryManager(object):
         """ A Class For Fetching Information From Object"""
         self.database = dataName
 
-    def addNewItem(self, prod_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order,_reorder_level, discontinued):
+    def addNewItem(self, prod_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order,reorder_level, discontinued):
         """ Adding Specific Item To Database"""
         conn = sqlite3.connect('database/{}.db'.format(self.database))
         c = conn.cursor()
         c.execute("INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?)",
-                  (prod_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order,_reorder_level, discontinued))
+                  (prod_id, product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock, units_on_order,reorder_level, discontinued))
         conn.commit()
         conn.close()
 
@@ -86,13 +86,13 @@ class inventoryManager(object):
             return False
         return True
 
-    def getAllProdId() :
+    def getAllProdId(self) :
         conn = sqlite3.connect('database/{}.db'.format(self.database))
 
         c = conn.cursor()
         c.execute("""SELECT product_id FROM products""")
         
-        info = c.fetchone()
+        info = c.fetchall()
         conn.close()
-        
+
         return info
