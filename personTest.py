@@ -1,44 +1,149 @@
 from person import customer
 import unittest
 
+"""Limited Sample Data
+ALFKI	Alfreds Futterkiste	Maria Anders	Sales Representative	Obere Str. 57	Berlin		12209	Germany	030-0074321	030-0076545
+ANATR	Ana Trujillo Emparedados y helados	Ana Trujillo	Owner	Avda. de la Constitución 2222	México D.F.		05021	Mexico	(5) 555-4729	(5) 555-3745
+ANTON	Antonio Moreno Taquería	Antonio Moreno	Owner	Mataderos  2312	México D.F.		05023	Mexico	(5) 555-3932	
+AROUT	Around the Horn	Thomas Hardy	Sales Representative	120 Hanover Sq.	London		WA1 1DP	UK	(171) 555-7788	(171) 555-6750
+BERGS	Berglunds snabbköp	Christina Berglund	Order Administrator	Berguvsvägen  8	Luleå		S-958 22	Sweden	0921-12 34 65	0921-12 34 67
+"""
+
 class testPerson(unittest.TestCase):
     
     def test_login(self):
         """ test different Parameters for login
         Test after database is done
         """
-        pass
+        AnaData = ["ANATR", "Ana Trujillo Emparedados y helados","Ana Trujillo", 
+        "Owner", "Avda. de la Constitución 2222", "México D.F.", "", "05021",
+        "Mexico", "(5) 555-4729", "(5) 555-3745"]
+
+        thomData = ["AROUT", "Around the Horn", "Thomas Hardy", 
+        "Sales Representative", "120 Hanover Sq.", "London", "", 
+        "WA1 1DP", "UK", "(171) 555-7788", "(171) 555-6750"]
+
+        testPerson = customer("testData", "ANATR", "Ana Trujillo Emparedados y helados", "Ana Trujillo")
+
+        self.assertTrue(testPerson.checkUser())
+ 
+        self.assertEqual(testPerson.getUID(), AnaData[0])
+        self.assertEqual(testPerson.getCompany(), AnaData[1])
+        self.assertEqual(testPerson.getName(), AnaData[2])
+        self.assertEqual(testPerson.getTitle(), AnaData[3])
+        self.assertEqual(testPerson.getAddress(), AnaData[4])
+        self.assertEqual(testPerson.getCity(), AnaData[5])
+        self.assertEqual(testPerson.getRegion(), AnaData[6])
+        self.assertEqual(testPerson.getPostCode(), AnaData[7])
+        self.assertEqual(testPerson.getCountry(), AnaData[8])
+        self.assertEqual(testPerson.getPhone(), AnaData[9])
+        self.assertEqual(testPerson.getFax(), AnaData[10])
+        self.assertListEqual(testPerson.getInfo(), AnaData)
+
+        testPerson.logout()
+        self.assertFalse(testPerson.checkUser())
+
+        testPerson.login("AROUT","Around the Horn","Thomas Hardy")
+        self.assertTrue(testPerson.checkUser())
+
+        self.assertEqual(testPerson.getUID(), thomData[0])
+        self.assertEqual(testPerson.getCompany(), thomData[1])
+        self.assertEqual(testPerson.getName(), thomData[2])
+        self.assertEqual(testPerson.getTitle(), thomData[3])
+        self.assertEqual(testPerson.getAddress(), thomData[4])
+        self.assertEqual(testPerson.getCity(), thomData[5])
+        self.assertEqual(testPerson.getRegion(), thomData[6])
+        self.assertEqual(testPerson.getPostCode(), thomData[7])
+        self.assertEqual(testPerson.getCountry(), thomData[8])
+        self.assertEqual(testPerson.getPhone(), thomData[9])
+        self.assertEqual(testPerson.getFax(), thomData[10])
+        self.assertListEqual(testPerson.getInfo(), thomData)
+
+        testPerson.logout()
+        self.assertFalse(testPerson.checkUser())
 
     def test_GuestOrLogout(self): #TESTS: guest, logout, setters, getters
         """ TESTS IF GUEST PARAMETER, also test initialization"""
-        testUser = customer()
-        self.assertEqual(testUser.getName(),"Customer")
-        self.assertEqual(testUser.getUID(), "none")
-        self.assertTrue(testUser.verifyPassword(None))
-
-        """ Test for Setters """
-        testUser.setName("JOHN")
-        testUser.setPassword("Testing")
-        testUser.setUID("random UID")
-        testUser.addRemoveRp(10)
+        gData = ["none", "guestComp", "Customer", None, None, None, None, None, None, None, None]
+        testPerson = customer("testData", "ANATR", "Ana Trujillo Emparedados y helados", "Ana Trujillo")
         
+        self.assertTrue(testPerson.checkUser())
+        testPerson.logout()
+        self.assertFalse(testPerson.checkUser())
 
-        self.assertEqual(testUser.getName(),"JOHN")
-        self.assertTrue(testUser.verifyPassword("Testing"))
-        self.assertEqual(testUser.getUID(), "random UID")
-        self.assertEqual(testUser.getRp(), 10)
-        """ Test for logout """      
-        testUser.logout()
-        self.assertEqual(testUser.getName(),"Customer")
-        self.assertEqual(testUser.getUID(), "none")
-        self.assertEqual(testUser.getRp(), 0)
-        self.assertTrue(testUser.verifyPassword(None))
-
+        self.assertEqual(testPerson.getUID(), gData[0])
+        self.assertEqual(testPerson.getCompany(), gData[1])
+        self.assertEqual(testPerson.getName(), gData[2])
+        self.assertEqual(testPerson.getTitle(), gData[3])
+        self.assertEqual(testPerson.getAddress(), gData[4])
+        self.assertEqual(testPerson.getCity(), gData[5])
+        self.assertEqual(testPerson.getRegion(), gData[6])
+        self.assertEqual(testPerson.getPostCode(), gData[7])
+        self.assertEqual(testPerson.getCountry(), gData[8])
+        self.assertEqual(testPerson.getPhone(), gData[9])
+        self.assertEqual(testPerson.getFax(), gData[10])
+        self.assertListEqual(testPerson.getInfo(), gData)
+        
     def test_RegisterAndRemove(self):
         """ Create a Dummy Account and Remove it
         to be implemented after register and database is done
         """
-        pass
+        sampleData = ["MAKEN", "Mapua University", "Kyle Kenshin Morales", 
+                    "Student", "Secret", "Manila", "", "111222", "Philippines", 
+                    "09338128054", "NULL"]
+
+        testPerson = customer("testData")
+        testPerson.register("MAKEN", "Mapua University", "Kyle Kenshin Morales", 
+                            "Student", "Secret", "Manila", "", "111222", "Philippines", "09338128054", "NULL")
+
+        self.assertFalse(testPerson.register("MAKEN", "Mapua University", "Kyle Kenshin Morales", 
+                            "Student", "Secret", "Manila", "", "111222", "Philippines", "09338128054", "NULL"))
+        
+        self.assertTrue(testPerson.login("MAKEN", "Mapua University", "Kyle Kenshin Morales"))
+        
+        self.assertTrue(testPerson.checkUser())
+
+        self.assertEqual(testPerson.getUID(), sampleData[0])
+        self.assertEqual(testPerson.getCompany(), sampleData[1])
+        self.assertEqual(testPerson.getName(), sampleData[2])
+        self.assertEqual(testPerson.getTitle(), sampleData[3])
+        self.assertEqual(testPerson.getAddress(), sampleData[4])
+        self.assertEqual(testPerson.getCity(), sampleData[5])
+        self.assertEqual(testPerson.getRegion(), sampleData[6])
+        self.assertEqual(testPerson.getPostCode(), sampleData[7])
+        self.assertEqual(testPerson.getCountry(), sampleData[8])
+        self.assertEqual(testPerson.getPhone(), sampleData[9])
+        self.assertEqual(testPerson.getFax(), sampleData[10])
+        self.assertListEqual(testPerson.getInfo(), sampleData)
+
+        testPerson.setCompany("Edits")
+        testPerson.setName("Edits")
+        testPerson.setTitle("Edits")
+        testPerson.setAddress("Edits")
+        testPerson.setCity("Edits")
+        testPerson.setRegion("Edits")
+        testPerson.setPostCode("Edits")
+        testPerson.setCountry("Edits")
+        testPerson.setPhone("Edits")
+        testPerson.setFax("Edits")
+        testPerson.updateRecords()
+
+        self.assertNotEqual(testPerson.getUID(), "Edits")
+        self.assertEqual(testPerson.getCompany(), "Edits")
+        self.assertEqual(testPerson.getName(), "Edits")
+        self.assertEqual(testPerson.getTitle(), "Edits")
+        self.assertEqual(testPerson.getAddress(), "Edits")
+        self.assertEqual(testPerson.getCity(), "Edits")
+        self.assertEqual(testPerson.getRegion(), "Edits")
+        self.assertEqual(testPerson.getPostCode(), "Edits")
+        self.assertEqual(testPerson.getCountry(), "Edits")
+        self.assertEqual(testPerson.getPhone(), "Edits")
+        self.assertEqual(testPerson.getFax(), "Edits")
+        
+        testPerson.unRegister()
+        self.assertFalse(testPerson.checkUser())
+        
+        self.assertFalse(testPerson.login("MAKEN", "Mapua University", "Kyle Kenshin Morales"))
 
     def test_addRemoveCart(self):
         """ Tests for addition or removal of item """
@@ -79,8 +184,3 @@ class testPerson(unittest.TestCase):
         """ Test for Clearing Cart """
         testUser.clearCrt()
         self.assertEqual(testUser.getCart(), [])
-
-    def test_rewardPts(self):
-        """ Test For Reward Points System 
-        Implement After Creation of Customer Database
-        """
