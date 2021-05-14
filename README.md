@@ -29,3 +29,6 @@ UnitTest all objects
 
 Start implementing a UI for the program  
  
+Sprint 3:
+
+After a week of producing the code with a limited of time, the group now has cancelled the plan of integrating the code into a GUI (via IronPython by WPF/XAML Integration). Instead the code now will be presented on a console form with the same output. The Unit testing has been implemented in inventoryManager.py and person.py, but all of the objects created was done this week, recently the storeManager.py. The problems that we most had is time constraint since it heavily imposed a lot of requirements and workload in different subject for the group ever since academic respite ended. The InventoryManager has been checked and modified by Kenshin as while as adding functions in the class such as the GetProdRow, GetAllProdID, and AddSubQty. Unit testing for inventoryManager is taking time due to lack of knowledge,practice and struggles of unit testing objects that heavily requires input. 
