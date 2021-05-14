@@ -62,6 +62,9 @@ class customer(object): #LOGIC
             check = False
         conn.commit()
         conn.close()
+
+        self.login(uid,company,newName)
+
         return check
 
     def checkUnique(self, id):
