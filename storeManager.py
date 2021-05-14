@@ -157,6 +157,7 @@ class storeManage(object):
         return
 
     """ BUY PART """
+
     def print2Dictionary(self, dict, ids):
         for id in ids:
             print("|ID: {}| NAME: {}| PRICE: {}| QTY: {}|".format(id[0], dict[id[0]]["NAME"], dict[id[0]]["PRICE"], dict[id[0]]["QTY"]))
@@ -220,6 +221,7 @@ class storeManage(object):
                     amount = int(input("Enter Amount: "))
                     if self.checkValidQty(amount, id, itemDict):
                         buyer.addCart(id, amount, itemDict[id]["PRICE"])
+                        itemDict[id]["QTY"] = itemDict[id]["QTY"] - amount
                     else:
                         print("Input Invalid")
 
@@ -235,28 +237,32 @@ class storeManage(object):
                     print("ID not found in cart")
 
             elif choice == 3:
-                if input("Are You Sure(0/1): ") == 1:
+                if int(input("Are You Sure(0/1): ")) == 1:
                     buyer.clearCrt()
                     print("Cart Cleared")
                 else:
                     print("Cart Not Cleared")
 
             elif choice == 4:
+                sum = 0
                 for item in buyer.getCart():
                     print("|{}| Name: {} | Qty: {} | Price: {} | Total: {}".format(item["ID"], itemDict[item["ID"]]["NAME"], item["amt"], item["price"], item["price"]*item["amt"]))
-
+                    sum = sum + item["price"]*item["amt"]
+                print(sum)
+                
             elif choice == 5:
                 sum = 0
 
                 for item in buyer.getCart():
                     print("|{}| Name: {} | Qty: {} | Price: {} | Total: {}".format(item["ID"], itemDict[item["ID"]]["NAME"], item["amt"], item["price"], item["price"]*item["amt"]))
                     sum = sum + item['amt']*item['price']
-
+                print(sum)
+                
                 if int(input("Are You Sure?(0/1): ")) == 1:
                     pay = float(input("How Much Money To Pay: "))
                     if pay >= sum:
                         for item in buyer.getCart():
-                            cashier.addSubQty(item['ID'], -item['amt'])
+                            cashier.addSubQty(-1*item['amt'], item['ID'])
                             print("Bought {} units of {} for ".format(item['amt'], itemDict[item['ID']]["NAME"], item['amt']*item['price']))
                         buyer.clearCrt()
                         print("Payment Successful; Change is {} Dollars".format(sum-pay))

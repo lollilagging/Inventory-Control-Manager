@@ -79,9 +79,9 @@ class inventoryManager(object):
     def addSubQty(self, addSub, idNo):
         """ ADD OR SUBTRACT BY VALUE addSub """
         initialQty = self.getProdInfo(idNo, 6) #6 = units_in_stocks
-        newQty = initialQty + addSub
+        newQty = initialQty[0] + addSub
         if newQty >= 0:
-            self.changeData(6,idNo,newQty)
+            self.changeData(6,idNo, newQty)
         else:
             return False
         return True
