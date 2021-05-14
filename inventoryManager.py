@@ -59,9 +59,9 @@ class inventoryManager(object):
         conn = sqlite3.connect('database/{}.db'.format(self.database))
         c = conn.cursor()
 
-        c.execute("""SELECT {} FROM products WHERE product_id = '{}'""".format(column[columnType],idNo))
+        c.execute("""SELECT {} FROM products WHERE product_id = {}""".format(column[columnType],idNo))
         
-        info = c.fetchone()[0][0]
+        info = c.fetchone()
         conn.close()
         return info
     

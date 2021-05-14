@@ -2,186 +2,186 @@ from person import customer
 from inventoryManager import inventoryManager
 """ The Main Logic """
 key = "x1x1"
+class storeManage(object):
+    def __init__(self, dataName = "northwind"):
+        """ A Class For Fetching Information From Object"""
+        self.database = dataName
 
-def printItems(itemList , invMan = inventoryManager("northwind")):
-    for items in itemList:
-        print("{}: {}".format(invMan.getProdInfo(items,0), invMan.getProdInfo(items,1)))
+    def printItems(self, itemList , invMan = inventoryManager("northwind")):
+        for items in itemList:
+            print("{}: {}, amt: {}".format(invMan.getProdInfo(items[0],0)[0], 
+            invMan.getProdInfo(items[0],1)[0], invMan.getProdInfo(items[0],6)[0]))
 
-def retNull(inp):
-    if inp == "None" or inp == "none":
-        return "NULL"
-    else :
-        return inp
+    def retNull(self, inp):
+        if inp == "None" or inp == "none":
+            return "NULL"
+        else :
+            return inp
 
-def addItem(itemList, invMan = inventoryManager("northwind")):
-    prod_id = int(input("Please Enter Product Id: "))
-    allow = False
-    for check in itemList:
-        allow = not check == prod_id
-        if not allow: 
-            print("ID NOT AVAILABLE, RETURNING...")
-            return
-    print("Enter None for Null input")
-    product_name = retNull(input("Product Name?: "))
-    supplier_id = int(input("Supplier ID?: "))
-    category_id = int(input("Category ID?: "))
-    quantity_per_unit = input("Quantity Per Unit?: ")
-    unit_price = float(input("Unit Price?: "))
-    units_in_stock = int(input("Units in Stock?: "))
-    units_on_order = int(input("Units On Order?: "))
-    reorder_level = int(input("Reorder Level: "))
-    discontinued = 0
+    def addItem(self, itemList, invMan = inventoryManager("northwind")):
+        prod_id = int(input("Please Enter Product Id: "))
+        allow = False
+        for check in itemList:
+            allow = not check == prod_id
+            if not allow: 
+                print("ID NOT AVAILABLE, RETURNING...")
+                return
+        print("Enter None for Null input")
+        product_name = self.retNull(input("Product Name?: "))
+        supplier_id = int(input("Supplier ID?: "))
+        category_id = int(input("Category ID?: "))
+        quantity_per_unit = input("Quantity Per Unit?: ")
+        unit_price = float(input("Unit Price?: "))
+        units_in_stock = int(input("Units in Stock?: "))
+        units_on_order = int(input("Units On Order?: "))
+        reorder_level = int(input("Reorder Level: "))
+        discontinued = 0
 
-    if unit_price >= 0:
-        invMan.addNewItem(prod_id, product_name, supplier_id, category_id, 
-        quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued)
+        if unit_price >= 0:
+            invMan.addNewItem(prod_id, product_name, supplier_id, category_id, 
+            quantity_per_unit, unit_price, units_in_stock, units_on_order, reorder_level, discontinued)
 
-    return
+        return
 
-def qtyManage(itemList, invMan = inventoryManager("northwind")):
-    printItems(itemList, invMan)
+    def qtyManage(self, itemList, invMan = inventoryManager("northwind")):
+        self.printItems(itemList, invMan)
 
-    found = False
+        found = False
 
-    id = input("Please Enter Item ID")
+        id = input("Please Enter Item ID")
 
-    for check in itemList:
-        if id == check:
-            found = True
+        for check in itemList:
+            if id == check:
+                found = True
 
-    if found == True:
-        itemAmt = invMan.getProdInfo(id, 6)
-        print("Item Has {} Amount of Units".format(itemAmt))
-        negPos = input("[0]Add; [1]Subtract")
-        if negPos:
-            add = -input("Subtract By How Much?")
+        if found == True:
+            itemAmt = invMan.getProdInfo(id, 6)
+            print("Item Has {} Amount of Units".format(itemAmt))
+            negPos = input("[0]Add; [1]Subtract")
+            if negPos:
+                add = -input("Subtract By How Much?")
+            else:
+                add = input("Add By How Much?")
+
+            if not invMan.addSubQty(add, id):
+                print("Failed To Subtract, Theres isn't enough quantity")
+
         else:
-            add = input("Add By How Much?")
+            print("Item Id not Found, Check Spelling")
+        
 
-        if not invMan.addSubQty(add, id):
-            print("Failed To Subtract, Theres isn't enough quantity")
+    def removeItem(self, itemList, invMan = inventoryManager("northwind")):
+        self.printItems(itemList, invMan)
 
-    else:
-        print("Item Id not Found, Check Spelling")
-    
+        found = False
 
-def removeItem(itemList, invMan = inventoryManager("northwind")):
-    printItems(itemList, invMan)
+        id = input("Please Enter Item ID")
 
-    found = False
+        for check in itemList:
+            if id == check:
+                found = True
+        
+        if found:
+            confirm = input("Are you sure you want to remove product {}?".format(invMan.getProdInfo(id,1)))
+            if confirm:
+                inventoryManager.removeItem(id)
+        else:
+            print("Item Id not Found, Check Spelling")
 
-    id = input("Please Enter Item ID")
+    def getProdInfo(self, itemList, invMan = inventoryManager("northwind")):
 
-    for check in itemList:
-        if id == check:
-            found = True
-    
-    if found:
-        confirm = input("Are you sure you want to remove product {}?".format(invMan.getProdInfo(id,1)))
-        if confirm:
-            inventoryManager.removeItem(id)
-    else:
-        print("Item Id not Found, Check Spelling")
+        column = ("product_id","product_name","supplier_id","category_id",
+        "quantity_per_unit","unit_price","units_in_stock","units_on_order",
+        "reorder_level","discontinued")
 
-def getProdInfo(itemList, invMan = inventoryManager("northwind")):
+        found = False
 
-    column = ("product_id","product_name","supplier_id","category_id",
-    "quantity_per_unit","unit_price","units_in_stock","units_on_order",
-    "reorder_level","discontinued")
+        self.printItems(itemList, invMan)
 
-    found = False
-
-    printItems(itemList, invMan)
-
-    id = input("Please Enter Item ID")
-    ctr = 0
-
-    for check in itemList:
-        if id == check:
-            found = True
-
-    if found:
-        print("Please Select What Kind Of Data")
-        for type in column:
-            print("[{}] : {}".format(ctr, type))
-            ctr = ctr+1
+        id = input("Please Enter Item ID")
         ctr = 0
-        choice = input("-->")
 
-        if choice >= 0 and choice < 10:
-            print(invMan.getProdInfo(id, choice))
+        for check in itemList:
+            if id == check:
+                found = True
+
+        if found:
+            print("Please Select What Kind Of Data")
+            for type in column:
+                print("[{}] : {}".format(ctr, type))
+                ctr = ctr+1
+            ctr = 0
+            choice = input("-->")
+
+            if choice >= 0 and choice < 10:
+                print(invMan.getProdInfo(id, choice))
+            else:
+                print("Input was Invalid")
         else:
-            print("Input was Invalid")
-    else:
-        print("Item Id not Found, Check Spelling")
+            print("Item Id not Found, Check Spelling")
 
-def updateInfo(invMan = inventoryManager("northwind")):
-    pass
+    def updateInfo(self, invMan = inventoryManager("northwind")):
+        pass
 
-def manage():
-    invMan = inventoryManager(input("Please Enter The Database File: "))
-    itemList = invMan.getAllProdId()
-    cont = True
-    option = input("""Choose What You Want To Do?\n
-                    1. Print Lists of Items\n
-                    2. Add New Item\n
-                    3. Add or Subtract Qty\n
-                    4. Remove Item from Data\n
-                    5. Get Prod Info
-                    6. Update Item Information\n
-                    7. Quit""")
+    def manage(self):
+        invMan = inventoryManager(input("Please Enter The Database File: "))
+        itemList = invMan.getAllProdId()
+        cont = True
 
-    while cont:
-        if option == "1":
-            printItems(itemList, invMan)
-        elif option == "2":
-            addItem(itemList, invMan)
-        elif option == "3":
-            qtyManage()
-        elif option == "4":
-            removeItem()
-        elif option == "5":
-            getProdInfo()
-        elif option == "6":
-            updateInfo()
-        elif option == "7":
-            cont = False
-        else:
-            print("Error Input")
+        while cont:
+            option = int(input("""Choose What You Want To Do?: 
+                    1. Print Lists of Items
+                    2. Add New Item
+                    3. Add or Subtract Qty
+                    4. Remove Item from Data
+                    6. Update Item Information
+                    7. Quit
+                    ---> """))
+            if option == 1:
+                self.printItems(itemList, invMan)
+            elif option == 2:
+                self.addItem(itemList, invMan)
+            elif option == 3:
+                self.qtyManage()
+            elif option == 4:
+                self.removeItem()
+            elif option == 5:
+                self.getProdInfo()
+            elif option == 6:
+                self.updateInfo()
+            elif option == 7:
+                cont = False
+            else:
+                print("Error Input")
+        return
 
-        option = input("""Choose What You Want To Do?\n
-                1. Print Lists of Items\n
-                2. Add New Item\n
-                3. Add or Subtract Qty\n
-                4. Remove Item from Data\n
-                6. Update Item Information\n
-                7. Quit""")
+    def buy():
+        pass
 
-    
-    return
+    def start(self):
+        choice = int(input("Manager or Customer(0/1): "))
+        cont = 1
+        while cont == 1: 
+            if choice == 0 :
+                check = (input("Please Enter Password: ") == key)
+                if check:
+                    self.manage()
 
-def buy():
-    pass
+                else :
+                    print("Wrong Password")
 
-def start():
-    choice = input("Manager or Customer(0/1)")
-    cont = True
-    while cont: 
-        if not choice :
-            check = (input("Please Enter Password: ") == key)
-            if check:
-                manage()
+            elif choice == 1:
+                self.buy()
 
-            else :
-                print("Wrong Password")
+            else:
+                print("""Error""")
+            cont = int(input("Continue?: (0/1)"))
 
-        elif choice:
-            buy()
+        return
 
-        else:
-            """Error"""
-        cont = input()
+def main():
+    startApp = storeManage()
+    startApp.start()
 
-    return
-
-start()
+if __name__ == '__main__':
+    main()
