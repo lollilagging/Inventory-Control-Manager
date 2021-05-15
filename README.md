@@ -30,10 +30,14 @@ The command for running it on anaconda terminal is python storeManager.py
           - Inputting 7 quits the program.
 
 4.) In order to login the customer into the account, either:
-          - input 1 as an old customer on prompting if you are a new customer or an old customer 
-          - input 6 from the menu
-    The program will now prompt the user to input the credentials starting from an existing ID, registered full name and the company registered. It will accept registered creedentials from both the provided database file and in the program. 
+		
+     - input 1 as an old customer on prompting if you are a new customer or an old customer 
+
+     - input 6 from the menu 
     
+   
+  The program will now prompt the user to input the credentials starting from an existing ID, registered full name and the company registered. It will accept registered creedentials from both the provided database file and in the program.
+  
  5.) To register a credential in the program, inputting 6 from the menu will prompt if the user wantes to login, register, or to become a guest instead. From choosing register, the following credentials until the registration will prompt to accept the values must be filled up in order to become a registered customer of the program. 
 
 # Inventory-Control-Manager
