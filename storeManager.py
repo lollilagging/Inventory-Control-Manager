@@ -262,7 +262,7 @@ class storeManage(object):
                     print("|{}| Name: {} | Qty: {} | Price: {} | Total: {}".format(item["ID"], itemDict[item["ID"]]["NAME"], item["amt"], item["price"], item["price"]*item["amt"]))
                     sum = sum + item['amt']*item['price']
                 print(sum)
-                
+
                 if int(input("Are You Sure?(0/1): ")) == 1:
                     pay = float(input("How Much Money To Pay: "))
                     if pay >= sum:

@@ -3,7 +3,7 @@ import sqlite3
 # Logic
 class inventoryManager(object):
 
-    def __init__(self, dataName = "northwind"):
+    def __init__(self, dataName = "testData"):
         """ A Class For Fetching Information From Object"""
         self.database = dataName
 
