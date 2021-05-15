@@ -229,7 +229,7 @@ class storeManage(object):
                 for item in buyer.getCart():
                     print("|{}| Name: {} | Qty: {} | Price: {} | Total: {}".format(item["ID"], itemDict[item["ID"]]["NAME"], item["amt"], item["price"], item["price"]*item["amt"]))
                 
-                remItem = input("Please Enter The Id of Removal: ")
+                remItem = int(input("Please Enter The Id of Removal: "))
 
                 if buyer.removeCart(remItem):
                     print("Successfully Removed Item")
@@ -257,15 +257,15 @@ class storeManage(object):
                     print("|{}| Name: {} | Qty: {} | Price: {} | Total: {}".format(item["ID"], itemDict[item["ID"]]["NAME"], item["amt"], item["price"], item["price"]*item["amt"]))
                     sum = sum + item['amt']*item['price']
                 print(sum)
-                
+
                 if int(input("Are You Sure?(0/1): ")) == 1:
                     pay = float(input("How Much Money To Pay: "))
                     if pay >= sum:
                         for item in buyer.getCart():
                             cashier.addSubQty(-1*item['amt'], item['ID'])
-                            print("Bought {} units of {} for ".format(item['amt'], itemDict[item['ID']]["NAME"], item['amt']*item['price']))
+                            print("Bought {} units of {} for {}".format(item['amt'], itemDict[item['ID']]["NAME"], item['amt']*item['price']))
                         buyer.clearCrt()
-                        print("Payment Successful; Change is {} Dollars".format(sum-pay))
+                        print("Payment Successful; Change is {} Dollars".format(pay-sum))
                     else:
                         print("Payment Failed")
                 else:
