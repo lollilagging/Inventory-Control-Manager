@@ -76,7 +76,7 @@ class storeManage(object):
 
         found = False
 
-        id = input("Please Enter Item ID")
+        id = int(input("Please Enter Item ID"))
 
         for check in itemList:
             if id == check:
@@ -176,7 +176,7 @@ class storeManage(object):
         buyer = customer()
         cashier = inventoryManager()
         itemList = cashier.getAllProdId()
-        done = 0
+        done = 1
         cont = 1
         itemDict = {}
 
@@ -186,18 +186,18 @@ class storeManage(object):
 
         log = int(input("Are you a new customer or old customer: (0/1)"))
 
-        while done == 0:
+        while done == 1:
             if log == 1:
-                id = int(input("Please Enter Your ID: "))
+                id = input("Please Enter Your ID: ")
                 name = input("Please Enter Your Full Name: ")
                 comp = input("Please Enter The Company You Belong: ")
                 if buyer.login(id, comp, name):
                     print("Successful Login")
-                    done = True
+                    done = 0
                 else:
                     done = input("Login Failed, Do You Wish To Try Again (0/1)")
             else :
-                done = 1
+                done = 0
                     
         while cont == 1:
             choice = int(input(""" Please Choose What You Want To Do: 
@@ -229,16 +229,21 @@ class storeManage(object):
                 for item in buyer.getCart():
                     print("|{}| Name: {} | Qty: {} | Price: {} | Total: {}".format(item["ID"], itemDict[item["ID"]]["NAME"], item["amt"], item["price"], item["price"]*item["amt"]))
                 
-                remItem = input("Please Enter The Id of Removal: ")
-
+                remItem = int(input("Please Enter The Id of Removal: "))
+                returnedItem = buyer.getItem_str(remItem) #ID amt price
                 if buyer.removeCart(remItem):
+                    itemDict[returnedItem["ID"]]["QTY"] = itemDict[returnedItem["ID"]]["QTY"] + returnedItem["amt"]
                     print("Successfully Removed Item")
                 else:
                     print("ID not found in cart")
 
             elif choice == 3:
                 if int(input("Are You Sure(0/1): ")) == 1:
+                    returnedItems = buyer.getCart()
+                    for item in returnedItems:
+                        itemDict[item["ID"]]["QTY"] = itemDict[item["ID"]]["QTY"] + item["amt"]
                     buyer.clearCrt()
+
                     print("Cart Cleared")
                 else:
                     print("Cart Not Cleared")
@@ -253,7 +258,7 @@ class storeManage(object):
             elif choice == 5:
                 sum = 0
 
-                for item in buyer.getCart():
+                for item in buyer.getCart(): # {ID : {NAME, PRICE, QUANTITY}}
                     print("|{}| Name: {} | Qty: {} | Price: {} | Total: {}".format(item["ID"], itemDict[item["ID"]]["NAME"], item["amt"], item["price"], item["price"]*item["amt"]))
                     sum = sum + item['amt']*item['price']
                 print(sum)
@@ -265,7 +270,7 @@ class storeManage(object):
                             cashier.addSubQty(-1*item['amt'], item['ID'])
                             print("Bought {} units of {} for ".format(item['amt'], itemDict[item['ID']]["NAME"], item['amt']*item['price']))
                         buyer.clearCrt()
-                        print("Payment Successful; Change is {} Dollars".format(sum-pay))
+                        print("Payment Successful; Change is {} Dollars".format(pay-sum))
                     else:
                         print("Payment Failed")
                 else:
