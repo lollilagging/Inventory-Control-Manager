@@ -2,7 +2,7 @@ import sqlite3
 from unittest.runner import TextTestRunner
 #import Cashier/Cashier
 
-class customer(object): #LOGIC
+class customer(object): #DATA
 
     def __init__(self, dataName = "northwind", uid = "guest", CN = 'guestComp', currentUser = 'guest'):
         """ Initialization of Data """
@@ -135,7 +135,7 @@ class customer(object): #LOGIC
         found = False
 
         if len(self.cart) != 0:
-            for index in range(0,len(self.cart)-1) : 
+            for index in range(len(self.cart)) : 
                 if prodID == self.cart[index]['ID']:
                     self.cart[index]['amt'] = self.cart[index]['amt'] + amt
                     found = True
@@ -146,10 +146,11 @@ class customer(object): #LOGIC
     def removeCart(self, prodID):
         """ Remove An Item in The Cart """
         found = False
-        for item in range(0, len(self.cart)-1):
+        for item in range(len(self.cart)) :
             if prodID == self.cart[item]['ID'] :
                 self.cart.pop(item)
                 found = True
+                break
         return found
 
     def lessenProd(self, prodID, amt):
@@ -180,9 +181,8 @@ class customer(object): #LOGIC
         return self.cart[index]
     
     def getItem_str(self, prodID):
-        """ Return a Specific Item string """
+        """ Return a Specific Item string, ITEM = {ID,amt,price} """
         for item in self.cart : 
-            if prodID == item['ID']:
                 return item                
         return None
 
