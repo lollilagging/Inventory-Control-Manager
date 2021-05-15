@@ -268,7 +268,7 @@ class storeManage(object):
                     if pay >= sum:
                         for item in buyer.getCart():
                             cashier.addSubQty(-1*item['amt'], item['ID'])
-                            print("Bought {} units of {} for ".format(item['amt'], itemDict[item['ID']]["NAME"], item['amt']*item['price']))
+                            print("Bought {} units of {} for {}".format(item['amt'], itemDict[item['ID']]["NAME"], item['amt']*item['price']))
                         buyer.clearCrt()
                         print("Payment Successful; Change is {} Dollars".format(pay-sum))
                     else:
